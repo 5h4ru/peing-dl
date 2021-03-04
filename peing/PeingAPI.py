@@ -28,10 +28,8 @@ class PeingAPI:
 
         latest_data = self._fetch_posts_by_hash(self.first_pasts_hash, page=1)
 
-        data.append(latest_data["items"])
-
-        for first_items in latest_data["items"]:
-            data.append(first_items)
+        for first_item in latest_data["items"]:
+            data.append(first_item)
 
         paginte = latest_data["paginate"]
 
@@ -42,7 +40,8 @@ class PeingAPI:
         for page in range(2, self.total_pages + 1):
             next_data = self._fetch_posts_by_hash(self.first_pasts_hash, page=page)
 
-            data.append(next_data["items"][0])
+            for item in next_data["items"]:
+                data.append(item)
 
             print(page)
 
