@@ -30,6 +30,9 @@ class PeingAPI:
 
         data.append(latest_data["items"])
 
+        for first_items in latest_data["items"]:
+            data.append(first_items)
+
         paginte = latest_data["paginate"]
 
         self.total_pages = paginte.get("total_pages")
@@ -38,7 +41,9 @@ class PeingAPI:
 
         for page in range(2, self.total_pages + 1):
             next_data = self._fetch_posts_by_hash(self.first_pasts_hash, page=page)
-            data.append(next_data["items"])
+
+            data.append(next_data["items"][0])
+
             print(page)
 
             time.sleep(1)
@@ -57,10 +62,16 @@ class PeingAPI:
         )
         return res.json()
 
-    def save_json(self, data: list, screen_name: str):
-        with open(f"{screen_name}.json", "w") as f:
+    def save_json(self, data: list, file_name: str):
+        with open(f"{file_name}.json", "w") as f:
             json.dump(data, f, indent=4)
 
-    def save_csv(self, data: list, screen_name: str):
-        d = pandas.read_json(data)
-        d.to_scv(f"{screen_name}.csv")
+    def save_csv(self, data: list, file_name: str):
+        for column in data:
+            d = pandas.json_normalize(column)
+
+            # 改行をエスケープ
+            d["body"] = d["body"].str.replace("\n", "\\n")
+            d["answer_body"] = d["answer_body"].str.replace("\n", "\\n")
+
+            d.to_csv(f"{file_name}.csv", mode="a", header=False, index=False)
