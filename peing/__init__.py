@@ -22,10 +22,10 @@ def main(args=None):
     if save_name is None:
         save_name = screen_name
 
-    if format == "json":
-        png.save_json(item, save_name)
-    else:
+    if format == "csv":
         png.save_csv(item, save_name)
+    else:
+        png.save_json(item, save_name)
 
 
 if __name__ == "__main__":
